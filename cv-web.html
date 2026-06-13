@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ian Carlo Salinas Rosas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:   #1c1c1e;
+      --mid:   #52525b;
+      --soft:  #a1a1aa;
+      --rule:  #e4e4e7;
+      --bg:    #f0ede8;
+      --card:  #f7f4f0;
+      --dark:  #1c1c1e;
+      --nav-bg: rgba(245,240,235,.92);
+    }
+
+    body.dark {
+      --ink:   #f0ede8;
+      --mid:   #a8a8b3;
+      --soft:  #666677;
+      --rule:  #2a2a2e;
+      --bg:    #111113;
+      --card:  #1a1a1f;
+      --dark:  #f0ede8;
+      --nav-bg: rgba(17,17,19,.92);
+    }
+
+    /* botón modo oscuro */
+    .dark-btn {
+      background: var(--ink);
+      border: none;
+      border-radius: 6px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .15s, opacity .15s;
+      flex-shrink: 0;
+    }
+
+    .dark-btn:hover { opacity: .75; }
+
+    .dark-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--bg);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ══ BARRA DE PROGRESO ══ */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #3c96ff, #7b5cff);
+      z-index: 300;
+    }
+
+    /* ══ PARTÍCULAS DE FONDO ══ */
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    nav, #scroll-progress { z-index: 300; }
+    #hero, .section, footer, #contacto-section { position: relative; z-index: 1; }
+
+    /* compensar el nav fijo al saltar a anclas */
+    #sobre-mi, #stack, #experiencia, #educacion, #contacto-section {
+      scroll-margin-top: 72px;
+    }
+
+    /* ══ TYPING en hero ══ */
+    .type-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: currentColor;
+      margin-left: 3px;
+      vertical-align: text-bottom;
+      animation: blink-cur .8s step-start infinite;
+    }
+
+    @keyframes blink-cur { 50% { opacity: 0; } }
+
+    /* ══ STATS ══ */
+    .stats-row {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+
+    .stat { display: flex; flex-direction: column; gap: 3px; }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .stat-num span { color: #3c96ff; }
+
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--soft);
+    }
+
+    /* ══ TILT 3D en cards ══ */
+    .edu-card, .modal-item { transform-style: preserve-3d; will-change: transform; }
+
+    /* ══ ORBIT — Iron Man HUD ══ */
+    .orbit-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0 40px;
+    }
+
+    .orbit-scene {
+      position: relative;
+      width: 620px;
+      height: 620px;
+    }
+
+    .orbit-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(60,150,255,.85);
+      box-shadow: 0 0 28px rgba(60,150,255,.35), 0 0 8px rgba(60,150,255,.5) inset;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+    }
+
+    @keyframes ring-spin {
+      from { transform: translate(-50%,-50%) rotate(0deg); }
+      to   { transform: translate(-50%,-50%) rotate(360deg); }
+    }
+
+    .orbit-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      z-index: 10;
+      box-shadow: 0 0 0 6px var(--bg), 0 0 0 7px var(--rule);
+      animation: center-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes center-pulse {
+      0%,100% { box-shadow: 0 0 0 6px var(--bg), 0 0 0 7px var(--rule); }
+      50%      { box-shadow: 0 0 0 9px var(--bg), 0 0 0 10px var(--rule); }
+    }
+
+    .orbit-node {
+      position: absolute;
+      transform: translate(-50%,-50%);
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 20px;
+      padding: 5px 11px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all .2s ease;
+      white-space: nowrap;
+      user-select: none;
+      z-index: 5;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .orbit-node:hover {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+      transform: translate(-50%,-50%) scale(1.12);
+      z-index: 20;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    }
+
+    body.dark .orbit-node:hover {
+      box-shadow: 0 0 16px rgba(100,180,255,.3);
+    }
+
+    /* Mobile: ocultar orbit, mostrar grid */
+    .stack-mobile { display: none; }
+
+    /* ══ STACK CARDS — clickeables ══ */
+    .stack-card {
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .15s, box-shadow .15s, border-color .15s;
+      user-select: none;
+    }
+
+    .stack-card:hover,
+    .stack-card:active {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,.08);
+      border-color: var(--ink);
+    }
+
+    .stack-card .card-hint {
+      font-size: 10px;
+      color: var(--soft);
+      margin-top: 6px;
+      letter-spacing: .3px;
+    }
+
+    /* ══ MODAL PORTAFOLIO ══ */
+    #portfolio-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    #portfolio-modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-box {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 32px 28px;
+      transform: translateY(20px);
+      transition: transform .25s ease;
+    }
+
+    #portfolio-modal.open .modal-box {
+      transform: translateY(0);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 18px;
+      background: var(--rule);
+      border: none;
+      border-radius: 6px;
+      width: 30px; height: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      color: var(--mid);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+
+    .modal-close:hover { background: var(--ink); color: var(--bg); }
+
+    .modal-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .modal-sub {
+      font-size: 13px;
+      color: var(--mid);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+
+    .modal-items {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-item {
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 16px 18px;
+      transition: border-color .15s, transform .15s;
+    }
+
+    a.modal-item:hover {
+      border-color: var(--ink);
+      transform: translateY(-2px);
+    }
+
+    .mi-title {
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .mi-desc {
+      font-size: 12.5px;
+      color: var(--mid);
+      line-height: 1.65;
+    }
+
+    .mi-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .mi-tag {
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--rule);
+      color: var(--mid);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    /* logos grid */
+    .logo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .logo-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      width: 60px;
+    }
+
+    .logo-item img {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    .logo-item span {
+      font-size: 9px;
+      color: var(--mid);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* ══ ANIMACIONES DE ENTRADA ══ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Hero — entra en cascada */
+    .hero-tag   { opacity: 0; animation: fadeUp .6s ease forwards .1s; }
+    #hero h1    { opacity: 0; animation: fadeUp .7s ease forwards .25s; }
+    .hero-desc  { opacity: 0; animation: fadeUp .7s ease forwards .45s; }
+    .hero-btns  { opacity: 0; animation: fadeUp .7s ease forwards .6s; }
+    .hero-badge { opacity: 0; animation: fadeUp .6s ease forwards .75s; }
+
+    /* Nav */
+    nav { opacity: 0; animation: fadeIn .5s ease forwards .05s; }
+
+    /* Secciones — se revelan al hacer scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ══ NAV ══ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+      z-index: 100;
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      height: 64px;
+    }
+
+    .nav-left {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .nav-center {
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 28px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--mid);
+    }
+
+    .nav-links a:hover { color: var(--ink); }
+
+    /* Switcher de idioma */
+    .lang-switcher {
+      display: flex;
+      gap: 4px;
+      background: var(--rule);
+      padding: 3px;
+      border-radius: 6px;
+    }
+
+    .lang-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .3px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--soft);
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .lang-btn.active {
+      background: var(--card);
+      color: var(--ink);
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+
+    .lang-btn img {
+      width: 24px;
+      height: 18px;
+      border-radius: 2px;
+      display: block;
+    }
+
+    /* ══ HERO ══ */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 110px 64px 64px;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 16px;
+    }
+
+    #hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(38px, 6vw, 66px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 22px;
+    }
+
+    .hero-desc {
+      font-size: 17px;
+      color: var(--mid);
+      max-width: 540px;
+      line-height: 1.85;
+      margin-bottom: 36px;
+    }
+
+    .hero-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 11px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 5px;
+      transition: opacity .15s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn:hover { opacity: .78; }
+    .btn-dark { background: var(--ink); color: var(--bg); }
+    body.dark .btn-dark { background: #f0ede8; color: #111113; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--rule); color: var(--mid); }
+
+    .hero-badge {
+      display: inline-block;
+      background: #e8f5ee;
+      color: #1c6e3d;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 13px;
+      border-radius: 20px;
+    }
+
+    /* ══ SECCIONES ══ */
+    .section {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 80px 64px;
+      border-top: 1px solid var(--rule);
+    }
+
+    .sec-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 32px;
+    }
+
+    /* ══ SOBRE MÍ ══ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 52px;
+      align-items: start;
+    }
+
+    .about-text {
+      font-size: 15.5px;
+      color: var(--mid);
+      line-height: 1.9;
+    }
+
+    .about-data { display: flex; flex-direction: column; }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 13px;
+    }
+
+    .data-row:last-child { border-bottom: none; }
+    .d-label { color: var(--soft); }
+    .d-val   { color: var(--ink); font-weight: 500; }
+    .d-val a { border-bottom: 1px solid var(--rule); }
+    .d-val a:hover { border-color: var(--ink); }
+
+    /* ══ STACK ══ */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .stack-card {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      padding: 12px 14px;
+      border-radius: 8px;
+    }
+
+    .stack-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    .stack-desc { font-size: 10px; color: var(--soft); }
+
+    /* ══ EXPERIENCIA ══ */
+    .exp-list { display: flex; flex-direction: column; gap: 38px; }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 32px;
+    }
+
+    .exp-date { font-size: 12px; color: var(--soft); font-weight: 500; margin-bottom: 3px; }
+    .exp-co   { font-size: 13px; color: var(--mid); }
+
+    .exp-role {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .exp-bul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+
+    .exp-bul li {
+      font-size: 14px;
+      color: var(--mid);
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .exp-bul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--rule);
+      top: 2px;
+      font-size: 11px;
+    }
+
+    /* ══ EDUCACIÓN ══ */
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .edu-card {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      padding: 22px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .15s, box-shadow .15s, border-color .15s;
+      user-select: none;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+
+    .edu-card:hover,
+    .edu-card:active {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,.08);
+      border-color: var(--ink);
+    }
+
+    .edu-hint {
+      font-size: 10px;
+      color: var(--soft);
+      margin-top: 8px;
+      letter-spacing: .3px;
+    }
+
+    .edu-degree { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+    .edu-school { font-size: 13px; color: var(--mid); margin-bottom: 4px; }
+    .edu-note   { font-size: 12px; color: var(--soft); }
+
+    /* ══ CONTACTO ══ */
+    #contacto-section {
+      background: #111113;
+    }
+
+    body.dark #contacto-section {
+      background: #0a0a0c;
+      border-top: 1px solid #222226;
+    }
+
+    #contacto-section .section { border-top: none; }
+    #contacto-section .sec-label { color: #52525b; }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .contact-cta h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      color: #f0ede8;
+    }
+
+    .contact-cta p { font-size: 14px; color: #71717a; line-height: 1.75; }
+
+    .contact-rows { display: flex; flex-direction: column; }
+
+    .c-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #27272a;
+      font-size: 13px;
+    }
+
+    .c-row:last-child { border-bottom: none; }
+    .c-label { color: #52525b; font-size: 10px; letter-spacing: .8px; font-weight: 600; }
+    .c-val   { color: #f0ede8; font-weight: 500; }
+    .c-val a { color: #f0ede8; border-bottom: 1px solid #27272a; }
+    .c-val a:hover { border-color: #f0ede8; }
+
+    /* ══ FOOTER ══ */
+    footer {
+      background: #111113;
+      border-top: 1px solid #27272a;
+      padding: 14px 64px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #3f3f46;
+    }
+
+    /* ══ RESPONSIVE — MÓVIL ══ */
+    @media (max-width: 700px) {
+
+      /* Nav */
+      nav {
+        padding: 0 16px;
+        height: 68px;
+        grid-template-columns: 1fr auto;
+      }
+      .nav-center { display: none; }
+
+      .nav-left { font-size: 13px; }
+      .nav-links { display: none; }
+
+      .lang-switcher { gap: 4px; }
+      .lang-btn { font-size: 15px; padding: 8px 13px; }
+
+      .dark-btn { width: 44px; height: 44px; }
+      .dark-btn svg { width: 20px; height: 20px; }
+
+      /* Hero */
+      #hero {
+        padding: 80px 20px 48px;
+        min-height: auto;
+      }
+
+      .hero-tag { font-size: 10px; }
+
+      #hero h1 {
+        font-size: 36px;
+        letter-spacing: -1px;
+        margin-bottom: 16px;
+      }
+
+      .hero-desc {
+        font-size: 15px;
+        margin-bottom: 28px;
+      }
+
+      .hero-btns { gap: 8px; }
+
+      .btn {
+        padding: 12px 18px;
+        font-size: 13px;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hero-badge { font-size: 11px; }
+
+      /* Secciones */
+      .section {
+        padding: 48px 20px;
+      }
+
+      .sec-label { font-size: 10px; margin-bottom: 24px; }
+
+      /* Sobre mí */
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .about-text { font-size: 15px; }
+
+      .data-row { font-size: 14px; padding: 11px 0; }
+
+      /* Stack — móvil */
+      .orbit-wrap  { display: none; }
+      .stack-mobile { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stack-card { padding: 12px 14px; }
+      .stack-name { font-size: 13px; }
+      .stack-desc { font-size: 10px; }
+      .card-hint  { font-size: 9px; }
+
+      /* Experiencia */
+      .exp-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .exp-meta { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+      .exp-date { font-size: 11px; }
+      .exp-co   { font-size: 12px; }
+      .exp-role { font-size: 18px; margin-top: 6px; }
+      .exp-bul li { font-size: 14px; }
+
+      /* Educación */
+      .edu-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .edu-card { padding: 16px 18px; }
+      .edu-degree { font-size: 16px; }
+      .edu-school { font-size: 13px; }
+      .edu-note   { font-size: 12px; }
+
+      /* Contacto */
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .contact-cta h2 { font-size: 26px; }
+      .contact-cta p  { font-size: 14px; }
+      .c-row { font-size: 13px; padding: 13px 0; }
+
+      /* Footer */
+      footer {
+        padding: 14px 20px;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 11px;
+      }
+    }
+
+    /* Extra pequeño */
+    @media (max-width: 380px) {
+      #hero h1 { font-size: 28px; }
+      .stack-grid { grid-template-columns: 1fr; }
+      .btn { font-size: 12px; padding: 11px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+<canvas id="particles"></canvas>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div></div>
+  <div class="nav-center">
+    <div class="nav-links">
+      <a href="#sobre-mi"          data-i18n="nav.about">Sobre mí</a>
+      <a href="#stack"             data-i18n="nav.stack">Stack</a>
+      <a href="#experiencia"       data-i18n="nav.exp">Experiencia</a>
+      <a href="#contacto-section"  data-i18n="nav.contact">Contacto</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('es')"><img src="https://flagcdn.com/24x18/mx.png" alt="ES"/> Esp</button>
+      <button class="lang-btn"        onclick="setLang('en')"><img src="https://flagcdn.com/24x18/us.png" alt="EN"/> Ing</button>
+      <button class="lang-btn"        onclick="setLang('it')"><img src="https://flagcdn.com/24x18/it.png" alt="IT"/> It</button>
+    </div>
+    <button class="dark-btn" onclick="toggleDark()" id="dark-btn" title="Modo oscuro" style="position:fixed;top:14px;left:16px;z-index:200">
+      <!-- luna — visible en modo claro -->
+      <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      <!-- sol — visible en modo oscuro -->
+      <svg id="icon-sun"  viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2"  x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2"  y1="12" x2="5"  y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</nav>
+
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-tag" data-i18n="hero.tag">Desarrollador · Técnico IT · Morelos, México</div>
+  <h1>Ian Carlo<br>Salinas Rosas</h1>
+  <p class="hero-desc" data-i18n="hero.desc">
+    Desarrollo backend con Python y JavaScript, automatización de procesos
+    e integración de IA. Técnico en Programación con cédula SEP y experiencia
+    real administrando infraestructura y clientes.
+  </p>
+  <div class="hero-btns">
+    <a class="btn btn-dark"    href="mailto:iancarlosalinas@gmail.com" data-i18n="hero.contact">✉ Contáctame</a>
+    <a class="btn btn-outline" href="https://github.com/iansalinas8" target="_blank">⌥ GitHub</a>
+    <a class="btn btn-outline" href="https://linkedin.com/in/ian-salinas11" target="_blank">in LinkedIn</a>
+  </div>
+  <span class="hero-badge" data-i18n="hero.badge">✓ Disponible para trabajar — Remoto</span>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num"><span id="stat-years">0</span>+</div>
+      <div class="stat-label" data-i18n="stat.years">Años de experiencia</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span id="stat-tech">0</span>+</div>
+      <div class="stat-label" data-i18n="stat.tech">Tecnologías</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span id="stat-langs">0</span></div>
+      <div class="stat-label" data-i18n="stat.langs">Idiomas</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span id="stat-avail">24</span>/7</div>
+      <div class="stat-label" data-i18n="stat.avail">Disponibilidad</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOBRE MÍ ══ -->
+<section id="sobre-mi" class="section reveal">
+  <div class="sec-label" data-i18n="about.label">Sobre mí</div>
+  <div class="about-grid">
+    <p class="about-text" data-i18n="about.text">
+      Técnico en Programación con experiencia en administración de infraestructura
+      de telecomunicaciones, desarrollo de software y soporte IT. He gestionado
+      operaciones con múltiples usuarios, resuelto problemas técnicos en tiempo
+      real y mantenido sistemas funcionando de forma continua. Desarrollo con
+      Python y JavaScript, administro bases de datos SQL y aplico herramientas
+      de IA para optimizar procesos. Me adapto rápido, trabajo con autonomía
+      y me enfoco en resultados concretos desde el primer día.
+    </p>
+    <div class="about-data">
+      <div class="data-row"><span class="d-label" data-i18n="about.loc">Ubicación</span><span class="d-val">Morelos, México</span></div>
+      <div class="data-row"><span class="d-label" data-i18n="about.mod">Modalidad</span><span class="d-val" data-i18n="about.remote">Remoto</span></div>
+      <div class="data-row"><span class="d-label" data-i18n="about.avail">Disponibilidad</span><span class="d-val" data-i18n="about.now">Inmediata</span></div>
+      <div class="data-row"><span class="d-label" data-i18n="about.lang">Idiomas</span><span class="d-val" data-i18n="about.langs">Español · Inglés · Italiano (básico)</span></div>
+      <div class="data-row"><span class="d-label">GitHub</span><span class="d-val"><a href="https://github.com/iansalinas8" target="_blank">iansalinas8</a></span></div>
+      <div class="data-row"><span class="d-label">LinkedIn</span><span class="d-val"><a href="https://linkedin.com/in/ian-salinas11" target="_blank">ian-salinas11</a></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STACK ══ -->
+<section id="stack" class="section reveal">
+  <div class="sec-label" data-i18n="stack.label">Stack técnico</div>
+  <!-- Orbit desktop -->
+  <div class="orbit-wrap">
+    <div class="orbit-scene" id="orbit-scene">
+      <div class="orbit-ring r1" style="width:220px;height:220px"></div>
+      <div class="orbit-ring r2" style="width:400px;height:400px"></div>
+      <div class="orbit-ring r3" style="width:560px;height:560px"></div>
+      <div class="orbit-center">STACK</div>
+    </div>
+  </div>
+
+  <!-- Grid móvil fallback -->
+  <div class="stack-grid stack-mobile">
+    <div class="stack-card" onclick="openModal('python')"><div class="stack-name">Python</div><div class="stack-desc" data-i18n="stack.python">Automatización, scripts, APIs, procesamiento de datos</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('js')"><div class="stack-name">JavaScript</div><div class="stack-desc" data-i18n="stack.js">Frontend, lógica de cliente, DOM, fetch APIs</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('node')"><div class="stack-name">Node.js</div><div class="stack-desc" data-i18n="stack.node">Backend, APIs REST, servidores web</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('sql')"><div class="stack-name">SQL / MySQL</div><div class="stack-desc" data-i18n="stack.sql">Diseño de esquemas, consultas complejas, administración</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('php')"><div class="stack-name">PHP</div><div class="stack-desc" data-i18n="stack.php">Páginas dinámicas, lógica de servidor</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('ai')"><div class="stack-name">IA Generativa</div><div class="stack-desc" data-i18n="stack.ai">Integración en flujos de trabajo, automatización</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('html')"><div class="stack-name">HTML5 / CSS</div><div class="stack-desc" data-i18n="stack.html">Estructura y estilos para aplicaciones web</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('git')"><div class="stack-name">Git</div><div class="stack-desc" data-i18n="stack.git">Control de versiones en proyectos propios</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('redes')"><div class="stack-name">Redes / IT</div><div class="stack-desc" data-i18n="stack.net">Configuración de routers, soporte, Windows experto</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('apache')"><div class="stack-name">Apache</div><div class="stack-desc" data-i18n="stack.apache">Configuración de servidor web, virtual hosts, .htaccess</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('cpp')"><div class="stack-name">C++</div><div class="stack-desc" data-i18n="stack.cpp">Programación orientada a objetos, lógica de bajo nivel</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('content')"><div class="stack-name">Contenido & Video</div><div class="stack-desc">Edición de video, producción de contenido para redes y plataformas</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('3d')"><div class="stack-name">Modelado 3D</div><div class="stack-desc" data-i18n="stack.3d">Creación y modelado de objetos tridimensionales</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('office')"><div class="stack-name">Microsoft Office</div><div class="stack-desc" data-i18n="stack.office">Word, Excel, PowerPoint, Outlook</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('webdesign')"><div class="stack-name">Diseño Web</div><div class="stack-desc" data-i18n="stack.webdesign">Diseño y maquetación de páginas web, UI y experiencia de usuario</div><div class="card-hint">Ver portafolio →</div></div>
+    <div class="stack-card" onclick="openModal('remoto')"><div class="stack-name">Trabajo Remoto</div><div class="stack-desc">Herramientas y flujos para trabajar 100% en línea</div><div class="card-hint">Ver portafolio →</div></div>
+  </div>
+</section>
+
+<!-- ══ EXPERIENCIA ══ -->
+<section id="experiencia" class="section reveal">
+  <div class="sec-label" data-i18n="exp.label">Experiencia</div>
+  <div class="exp-list">
+
+    <div class="exp-item">
+      <div><div class="exp-date">2022 – <span data-i18n="exp.present">Presente</span></div><div class="exp-co" data-i18n="exp.own">Proyectos propios</div></div>
+      <div>
+        <div class="exp-role" data-i18n="exp1.role">Desarrollo Backend y Automatización</div>
+        <ul class="exp-bul">
+          <li data-i18n="exp1.b1">Scripts Python para automatización de procesos y consumo de APIs REST.</li>
+          <li data-i18n="exp1.b2">APIs y lógica backend con Node.js para aplicaciones web propias.</li>
+          <li data-i18n="exp1.b3">Bases de datos relacionales MySQL — diseño, consultas y administración.</li>
+          <li data-i18n="exp1.b4">Integración de herramientas de IA en flujos de trabajo reales.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div><div class="exp-date">2021 – <span data-i18n="exp.present">Presente</span></div><div class="exp-co" data-i18n="exp.biz">Proveedor de Servicios de Telecomunicaciones</div></div>
+      <div>
+        <div class="exp-role" data-i18n="exp2.role">Administrador de Operaciones y Redes</div>
+        <ul class="exp-bul">
+          <li data-i18n="exp2.b1">Administración y monitoreo de infraestructura de red con múltiples nodos y usuarios activos.</li>
+          <li data-i18n="exp2.b2">Configuración y mantenimiento de equipos de telecomunicaciones: routers, switches y access points.</li>
+          <li data-i18n="exp2.b3">Gestión de cartera de clientes, contratos, facturación y seguimiento de pagos.</li>
+          <li data-i18n="exp2.b4">Atención y resolución de incidencias técnicas con tiempos de respuesta controlados.</li>
+          <li data-i18n="exp2.b5">Elaboración de reportes operativos e indicadores de desempeño en hoja de cálculo.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div><div class="exp-date">2022 – <span data-i18n="exp.present">Presente</span></div><div class="exp-co" data-i18n="exp.free">Freelance</div></div>
+      <div>
+        <div class="exp-role" data-i18n="exp3.role">Técnico en Cómputo · Soporte IT</div>
+        <ul class="exp-bul">
+          <li data-i18n="exp3.b1">Diagnóstico y reparación de equipos de cómputo.</li>
+          <li data-i18n="exp3.b2">Instalación de Windows, Office y software empresarial.</li>
+          <li data-i18n="exp3.b3">Soporte técnico a usuarios no técnicos.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ EDUCACIÓN ══ -->
+<section id="educacion" class="section reveal">
+  <div class="sec-label" data-i18n="edu.label">Educación</div>
+  <div class="edu-grid">
+    <a class="edu-card" href="https://maps.google.com/?q=CECyTE+Plantel+01+Tenextepango+Morelos+Mexico" target="_blank" rel="noopener">
+      <div class="edu-degree" data-i18n="edu1.deg">Técnico en Programación</div>
+      <div class="edu-school">CECyTE Plantel 01 · Tenextepango, Morelos</div>
+      <div class="edu-note"  data-i18n="edu1.note">Cédula profesional emitida por la SEP</div>
+      <div class="edu-hint">📍 Ver en Maps →</div>
+    </a>
+    <a class="edu-card" href="https://www.upnmorelos.edu.mx" target="_blank" rel="noopener">
+      <div class="edu-degree" data-i18n="edu2.deg">Lic. en Pedagogía</div>
+      <div class="edu-school">Universidad Pedagógica Nacional (UPN)</div>
+      <div class="edu-note"  data-i18n="edu2.note">En curso</div>
+      <div class="edu-hint">🌐 Visitar sitio oficial →</div>
+    </a>
+  </div>
+</section>
+
+<!-- ══ CONTACTO ══ -->
+<div id="contacto-section">
+  <section class="section reveal">
+    <div class="sec-label" data-i18n="contact.label">Contacto</div>
+    <div class="contact-grid">
+      <div class="contact-cta">
+        <h2 data-i18n="contact.cta">¿Tienes una<br>oportunidad?</h2>
+        <p data-i18n="contact.sub">Estoy disponible de inmediato para posiciones remotas. Escríbeme y hablamos.</p>
+      </div>
+      <div class="contact-rows">
+        <div class="c-row"><span class="c-label" data-i18n="contact.email">EMAIL</span><span class="c-val"><a href="mailto:iancarlosalinas@gmail.com">iancarlosalinas@gmail.com</a></span></div>
+        <div class="c-row"><span class="c-label" data-i18n="contact.phone">TELÉFONO</span><span class="c-val"><a href="tel:+527352828223">+52 735 282 8223</a></span></div>
+        <div class="c-row"><span class="c-label">LINKEDIN</span><span class="c-val"><a href="https://linkedin.com/in/ian-salinas11" target="_blank">ian-salinas11</a></span></div>
+        <div class="c-row"><span class="c-label">GITHUB</span><span class="c-val"><a href="https://github.com/iansalinas8" target="_blank">iansalinas8</a></span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ MODAL PORTAFOLIO ══ -->
+<div id="portfolio-modal">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-tag" id="m-tag"></div>
+    <div class="modal-title" id="m-title"></div>
+    <div class="modal-sub" id="m-sub"></div>
+    <div class="modal-items" id="m-items"></div>
+  </div>
+</div>
+
+<footer>
+  <span>Ian Carlo Salinas Rosas</span>
+  <span>Morelos, México · <span data-i18n="footer.remote">Remoto</span> · 2025</span>
+</footer>
+
+<script>
+const i18n = {
+  es: {
+    "nav.about":"Sobre mí","nav.stack":"Stack","nav.exp":"Experiencia","nav.contact":"Contacto",
+    "hero.tag":"Desarrollador · Técnico IT · Morelos, México",
+    "hero.desc":"Desarrollo backend con Python y JavaScript, automatización de procesos e integración de IA. Técnico en Programación con cédula SEP y experiencia real administrando infraestructura y clientes.",
+    "hero.contact":"✉ Contáctame","hero.badge":"✓ Disponible para trabajar — Remoto",
+    "about.label":"Sobre mí",
+    "about.text":"Técnico en Programación con experiencia en administración de infraestructura de telecomunicaciones, desarrollo de software y soporte IT. He gestionado operaciones con múltiples usuarios, resuelto problemas técnicos en tiempo real y mantenido sistemas funcionando de forma continua. Desarrollo con Python y JavaScript, administro bases de datos SQL y aplico herramientas de IA para optimizar procesos. Me adapto rápido, trabajo con autonomía y me enfoco en resultados concretos desde el primer día.",
+    "about.loc":"Ubicación","about.mod":"Modalidad","about.remote":"Remoto",
+    "about.avail":"Disponibilidad","about.now":"Inmediata",
+    "about.lang":"Idiomas","about.langs":"Español · Inglés · Italiano (básico)",
+    "stack.label":"Stack técnico",
+    "stack.python":"Automatización de procesos, análisis de datos, consumo de APIs",
+    "stack.js":"Interfaces dinámicas, programación asíncrona, manipulación del DOM",
+    "stack.node":"Servicios REST, arquitectura backend, APIs escalables",
+    "stack.sql":"Modelado de datos, optimización de consultas, gestión de bases de datos",
+    "stack.php":"Desarrollo web dinámico, lógica de servidor, integración con BD",
+    "stack.ai":"Ingeniería de prompts, flujos con LLMs, desarrollo asistido por IA",
+    "stack.html":"Maquetación web, diseño responsivo, estándares modernos",
+    "stack.git":"Control de versiones, gestión de ramas, colaboración en equipo",
+    "stack.net":"Administración de redes, soporte técnico, infraestructura IT",
+    "stack.apache":"Configuración de servidor web, virtual hosts, .htaccess, mod_rewrite",
+    "stack.cpp":"Programación orientada a objetos, lógica de bajo nivel, algoritmos",
+    "stack.video":"Edición, corte, efectos y exportación para redes y web",
+    "stack.3d":"Creación y modelado de objetos tridimensionales",
+    "stack.content":"Producción de contenido digital para redes y plataformas",
+    "stack.office":"Word, Excel, PowerPoint, Outlook",
+    "stack.webdesign":"Diseño y maquetación de páginas web, UI y experiencia de usuario",
+    "exp.label":"Experiencia","exp.present":"Presente","exp.own":"Proyectos propios","exp.biz":"Proveedor de Servicios de Telecomunicaciones","exp.free":"Freelance",
+    "exp1.role":"Desarrollo Backend y Automatización",
+    "exp1.b1":"Scripts Python para automatización de procesos y consumo de APIs REST.",
+    "exp1.b2":"APIs y lógica backend con Node.js para aplicaciones web propias.",
+    "exp1.b3":"Bases de datos relacionales MySQL — diseño, consultas y administración.",
+    "exp1.b4":"Integración de herramientas de IA en flujos de trabajo reales.",
+    "exp2.role":"Administrador de Operaciones y Redes",
+    "exp2.b1":"Administración y monitoreo de infraestructura de red con múltiples nodos y usuarios activos.",
+    "exp2.b2":"Configuración y mantenimiento de equipos de telecomunicaciones: routers, switches y access points.",
+    "exp2.b3":"Gestión de cartera de clientes, contratos, facturación y seguimiento de pagos.",
+    "exp2.b4":"Atención y resolución de incidencias técnicas con tiempos de respuesta controlados.",
+    "exp2.b5":"Elaboración de reportes operativos e indicadores de desempeño en hoja de cálculo.",
+    "exp3.role":"Técnico en Cómputo · Soporte IT",
+    "exp3.b1":"Diagnóstico y reparación de equipos de cómputo.",
+    "exp3.b2":"Instalación de Windows, Office y software empresarial.",
+    "exp3.b3":"Soporte técnico a usuarios no técnicos.",
+    "edu.label":"Educación",
+    "edu1.deg":"Técnico en Programación","edu1.note":"Cédula profesional emitida por la SEP",
+    "edu2.deg":"Lic. en Pedagogía","edu2.note":"En curso",
+    "contact.label":"Contacto","contact.cta":"¿Tienes una\noportunidad?",
+    "contact.sub":"Estoy disponible de inmediato para posiciones remotas. Escríbeme y hablamos.",
+    "contact.email":"EMAIL","contact.phone":"TELÉFONO",
+    "footer.remote":"Remoto",
+    "node.python":"Python","node.js":"JavaScript","node.sql":"SQL / MySQL",
+    "node.ai":"IA Generativa","node.redes":"Redes / IT","node.node":"Node.js",
+    "node.php":"PHP","node.html":"HTML5 / CSS","node.git":"Git","node.apache":"Apache",
+    "node.cpp":"C++","node.content":"Contenido & Video","node.3d":"Modelado 3D",
+    "node.office":"MS Office","node.webdesign":"Diseño Web","node.remoto":"Trabajo Remoto",
+    "stat.years":"Años de experiencia","stat.tech":"Tecnologías","stat.langs":"Idiomas","stat.avail":"Disponibilidad"
+  },
+  en: {
+    "nav.about":"About","nav.stack":"Stack","nav.exp":"Experience","nav.contact":"Contact",
+    "hero.tag":"Developer · IT Technician · Morelos, Mexico",
+    "hero.desc":"Backend development with Python and JavaScript, process automation and AI integration. Certified Programming Technician with real experience managing infrastructure and clients.",
+    "hero.contact":"✉ Contact me","hero.badge":"✓ Available to work — Remote",
+    "about.label":"About me",
+    "about.text":"Programming Technician with experience in telecommunications infrastructure, software development and IT support. I have managed multi-user operations, resolved technical incidents in real time and kept systems running continuously. I develop with Python and JavaScript, manage SQL databases and apply AI tools to optimize workflows. I adapt quickly, work autonomously and focus on delivering real results from day one.",
+    "about.loc":"Location","about.mod":"Work mode","about.remote":"Remote",
+    "about.avail":"Availability","about.now":"Immediate",
+    "about.lang":"Languages","about.langs":"Spanish · English · Italian (basic)",
+    "stack.label":"Tech stack",
+    "stack.python":"Process automation, API integration, data pipelines",
+    "stack.js":"Interactive UI, async programming, event-driven logic",
+    "stack.node":"RESTful services, server-side rendering, microservices",
+    "stack.sql":"Data modeling, query optimization, CRUD operations",
+    "stack.php":"Server-side scripting, dynamic web apps, form handling",
+    "stack.ai":"Prompt engineering, LLM workflows, AI-assisted development",
+    "stack.html":"Semantic markup, responsive layouts, web standards",
+    "stack.git":"Source control, branching strategy, collaborative dev",
+    "stack.net":"Network admin, troubleshooting, infrastructure support",
+    "stack.apache":"Web server setup, virtual hosts, .htaccess, mod_rewrite",
+    "stack.cpp":"Object-oriented programming, low-level logic, algorithms",
+    "stack.video":"Editing, cutting, effects and export for social media and web",
+    "stack.3d":"3D object creation and modeling",
+    "stack.content":"Digital content production for social media and platforms",
+    "stack.office":"Word, Excel, PowerPoint, Outlook",
+    "stack.webdesign":"Web page design and layout, UI and user experience",
+    "exp.label":"Experience","exp.present":"Present","exp.own":"Personal projects","exp.biz":"Telecommunications Service Provider","exp.free":"Freelance",
+    "exp1.role":"Backend Development & Automation",
+    "exp1.b1":"Python scripts for process automation and REST API consumption.",
+    "exp1.b2":"Backend logic and APIs with Node.js for personal web applications.",
+    "exp1.b3":"Relational MySQL databases — design, queries and administration.",
+    "exp1.b4":"Integration of AI tools into real-world workflows.",
+    "exp2.role":"Network & Operations Administrator",
+    "exp2.b1":"Administration and monitoring of network infrastructure with multiple nodes and active users.",
+    "exp2.b2":"Configuration and maintenance of telecom equipment: routers, switches and access points.",
+    "exp2.b3":"Client portfolio management, contracts, billing and payment tracking.",
+    "exp2.b4":"Technical incident resolution with controlled response times.",
+    "exp2.b5":"Operational reports and performance KPIs tracked in spreadsheets.",
+    "exp3.role":"Computer Technician · IT Support",
+    "exp3.b1":"Diagnosis and repair of computer equipment.",
+    "exp3.b2":"Installation of Windows, Office and enterprise software.",
+    "exp3.b3":"Technical support for non-technical users.",
+    "edu.label":"Education",
+    "edu1.deg":"Programming Technician","edu1.note":"Professional certificate issued by the SEP",
+    "edu2.deg":"B.A. in Pedagogy","edu2.note":"In progress",
+    "contact.label":"Contact","contact.cta":"Got an\nopportunity?",
+    "contact.sub":"I'm immediately available for remote positions. Write to me and let's talk.",
+    "contact.email":"EMAIL","contact.phone":"PHONE",
+    "footer.remote":"Remote",
+    "node.python":"Python","node.js":"JavaScript","node.sql":"SQL / MySQL",
+    "node.ai":"Generative AI","node.redes":"Networks / IT","node.node":"Node.js",
+    "node.php":"PHP","node.html":"HTML5 / CSS","node.git":"Git","node.apache":"Apache",
+    "node.cpp":"C++","node.content":"Content & Video","node.3d":"3D Modeling",
+    "node.office":"MS Office","node.webdesign":"Web Design","node.remoto":"Remote Work",
+    "stat.years":"Years of experience","stat.tech":"Technologies","stat.langs":"Languages","stat.avail":"Availability"
+  },
+  it: {
+    "nav.about":"Chi sono","nav.stack":"Stack","nav.exp":"Esperienza","nav.contact":"Contatti",
+    "hero.tag":"Sviluppatore · Tecnico IT · Morelos, Messico",
+    "hero.desc":"Sviluppo backend con Python e JavaScript, automazione dei processi e integrazione dell'IA. Tecnico in Programmazione con titolo ufficiale SEP ed esperienza reale nella gestione di infrastrutture e clienti.",
+    "hero.contact":"✉ Contattami","hero.badge":"✓ Disponibile a lavorare — Remoto",
+    "about.label":"Chi sono",
+    "about.text":"Tecnico in Programmazione con esperienza nell'amministrazione di infrastrutture di telecomunicazioni, sviluppo software e supporto IT. Ho gestito operazioni con più utenti, risolto problemi tecnici in tempo reale e mantenuto sistemi operativi in modo continuativo. Sviluppo con Python e JavaScript, gestisco database SQL e applico strumenti di IA per ottimizzare i processi. Mi adatto rapidamente, lavoro in autonomia e mi concentro su risultati concreti fin dal primo giorno.",
+    "about.loc":"Posizione","about.mod":"Modalità","about.remote":"Remoto",
+    "about.avail":"Disponibilità","about.now":"Immediata",
+    "about.lang":"Lingue","about.langs":"Spagnolo · Inglese · Italiano (base)",
+    "stack.label":"Stack tecnologico",
+    "stack.python":"Automazione processi, analisi dati, integrazione servizi",
+    "stack.js":"Interfacce dinamiche, programmazione asincrona, gestione eventi",
+    "stack.node":"Servizi RESTful, architettura a microservizi, API scalabili",
+    "stack.sql":"Modellazione dati, ottimizzazione query, gestione database",
+    "stack.php":"Sviluppo web dinamico, logica applicativa, integrazione BD",
+    "stack.ai":"Ingegneria dei prompt, flussi LLM, sviluppo assistito da IA",
+    "stack.html":"Markup semantico, layout responsivi, standard web moderni",
+    "stack.git":"Controllo versione, gestione branch, sviluppo collaborativo",
+    "stack.net":"Amministrazione reti, troubleshooting, supporto infrastruttura",
+    "stack.apache":"Configurazione server web, virtual host, .htaccess, mod_rewrite",
+    "stack.cpp":"Programmazione orientata agli oggetti, logica di basso livello, algoritmi",
+    "stack.video":"Montaggio, tagli, effetti ed esportazione per social e web",
+    "stack.3d":"Creazione e modellazione di oggetti tridimensionali",
+    "stack.content":"Produzione di contenuti digitali per social e piattaforme",
+    "stack.office":"Word, Excel, PowerPoint, Outlook",
+    "stack.webdesign":"Progettazione e impaginazione di siti web, UI e UX",
+    "exp.label":"Esperienza","exp.present":"Presente","exp.own":"Progetti personali","exp.biz":"Fornitore di Servizi di Telecomunicazioni","exp.free":"Freelance",
+    "exp1.role":"Sviluppo Backend e Automazione",
+    "exp1.b1":"Script Python per l'automazione dei processi e il consumo di API REST.",
+    "exp1.b2":"Logica backend e API con Node.js per applicazioni web personali.",
+    "exp1.b3":"Database relazionali MySQL — progettazione, query e amministrazione.",
+    "exp1.b4":"Integrazione di strumenti di IA in flussi di lavoro reali.",
+    "exp2.role":"Amministratore di Operazioni e Reti",
+    "exp2.b1":"Amministrazione e monitoraggio dell'infrastruttura di rete con nodi multipli e utenti attivi.",
+    "exp2.b2":"Configurazione e manutenzione di apparati di telecomunicazione: router, switch e access point.",
+    "exp2.b3":"Gestione del portafoglio clienti, contratti, fatturazione e monitoraggio pagamenti.",
+    "exp2.b4":"Risoluzione di incidenti tecnici con tempi di risposta controllati.",
+    "exp2.b5":"Reportistica operativa e indicatori di performance su foglio di calcolo.",
+    "exp3.role":"Tecnico Informatico · Supporto IT",
+    "exp3.b1":"Diagnosi e riparazione di apparecchiature informatiche.",
+    "exp3.b2":"Installazione di Windows, Office e software aziendale.",
+    "exp3.b3":"Supporto tecnico a utenti non tecnici.",
+    "edu.label":"Istruzione",
+    "edu1.deg":"Tecnico in Programmazione","edu1.note":"Certificato professionale rilasciato dalla SEP",
+    "edu2.deg":"Laurea in Pedagogia","edu2.note":"In corso",
+    "contact.label":"Contatti","contact.cta":"Hai un'opportunità\nper me?",
+    "contact.sub":"Sono disponibile immediatamente per posizioni remote. Scrivimi e parliamo.",
+    "contact.email":"EMAIL","contact.phone":"TELEFONO",
+    "footer.remote":"Remoto",
+    "node.python":"Python","node.js":"JavaScript","node.sql":"SQL / MySQL",
+    "node.ai":"IA Generativa","node.redes":"Reti / IT","node.node":"Node.js",
+    "node.php":"PHP","node.html":"HTML5 / CSS","node.git":"Git","node.apache":"Apache",
+    "node.cpp":"C++","node.content":"Contenuto & Video","node.3d":"Modellazione 3D",
+    "node.office":"MS Office","node.webdesign":"Design Web","node.remoto":"Lavoro Remoto",
+    "stat.years":"Anni di esperienza","stat.tech":"Tecnologie","stat.langs":"Lingue","stat.avail":"Disponibilità"
+  }
+};
+
+/* ══ DATOS DEL PORTAFOLIO ══ */
+const portfolio = {
+  redes: {
+    tag: 'Redes / IT',
+    title: 'Infraestructura & Soporte',
+    sub: 'Experiencia real operando una red de servicios de internet y brindando soporte técnico a usuarios.',
+    items: [
+      { title: 'Proveedor de Internet — ISP Propio', desc: 'Administración completa de red local: configuración de routers, asignación de IPs, control de ancho de banda y monitoreo de clientes activos.', tags: ['ISP','DHCP','Firewall','LAN'] },
+      { title: 'Equipos que manejo', desc: 'Configuración y administración de equipos de red en entornos reales.', tags: ['MikroTik','TP-Link','Ubiquiti','Switches','Access Points','Módems','Antenas'] },
+      { title: 'Soporte a Equipos de Cómputo', desc: 'Diagnóstico, reparación y mantenimiento de computadoras, laptops e impresoras.', tags: ['PCs','Laptops','Impresoras','Hardware','Windows'] },
+      { title: 'Soporte Técnico a Clientes', desc: 'Diagnóstico y resolución de fallas de conectividad, configuración de dispositivos en campo y atención remota a usuarios.', tags: ['Soporte','Wi-Fi','Troubleshooting','Remoto'] },
+    ]
+  },
+  python: {
+    tag: 'Python',
+    title: 'Automatización & Scripts',
+    sub: 'Proyectos de automatización, procesamiento de datos y consumo de APIs con Python.',
+    items: [
+      { title: 'Automatización de Procesos', desc: 'Scripts para automatizar tareas repetitivas: lectura de archivos, generación de reportes y envío de notificaciones.', tags: ['Python','Automation','Scripts'] },
+      { title: 'Consumo de APIs REST', desc: 'Integración con APIs externas para obtener y procesar datos de forma automática.', tags: ['Python','REST','JSON','requests'] },
+      { title: 'Procesamiento de Datos', desc: 'Limpieza, transformación y análisis de datos estructurados para generar reportes.', tags: ['Python','Pandas','CSV','Data'] }
+    ]
+  },
+  js: {
+    tag: 'JavaScript',
+    title: 'Desarrollo Frontend',
+    sub: 'Interfaces dinámicas, lógica de cliente y manipulación del DOM con JavaScript.',
+    items: [
+      { title: 'Interfaces Dinámicas', desc: 'Desarrollo de páginas web interactivas con manejo de eventos, animaciones y actualización dinámica del contenido.', tags: ['JavaScript','DOM','Events'] },
+      { title: 'Consumo de APIs desde el Frontend', desc: 'Integración de APIs REST usando fetch y manejo asíncrono con async/await.', tags: ['fetch','async/await','JSON'] },
+      { title: 'Este CV Web', desc: 'Este mismo portafolio está construido con HTML, CSS y JavaScript puro — sin frameworks.', tags: ['JavaScript','CSS','HTML5'] }
+    ]
+  },
+  node: {
+    tag: 'Node.js',
+    title: 'Backend & APIs REST',
+    sub: 'Desarrollo de servicios backend y APIs con Node.js.',
+    items: [
+      { title: 'APIs REST con Node.js', desc: 'Construcción de endpoints REST para aplicaciones web, manejo de rutas y middleware.', tags: ['Node.js','Express','REST','API'] },
+      { title: 'Servidor Backend', desc: 'Lógica de servidor para aplicaciones web: autenticación, manejo de peticiones y respuestas JSON.', tags: ['Node.js','Backend','JSON'] }
+    ]
+  },
+  sql: {
+    tag: 'SQL / MySQL',
+    title: 'Bases de Datos',
+    sub: 'Diseño, administración y consulta de bases de datos relacionales.',
+    items: [
+      { title: 'Base de Datos de Clientes — ISP', desc: 'Diseño e implementación de BD para gestionar clientes, contratos, pagos e historial de servicios del negocio propio.', tags: ['MySQL','CRUD','JOINs','Reportes'] },
+      { title: 'Esquemas Relacionales', desc: 'Diseño de tablas, relaciones, llaves foráneas y procedimientos almacenados para distintos proyectos.', tags: ['SQL','Schemas','Stored Procedures'] }
+    ]
+  },
+  php: {
+    tag: 'PHP',
+    title: 'Desarrollo Web Dinámico',
+    sub: 'Páginas y aplicaciones web con lógica de servidor en PHP.',
+    items: [
+      { title: 'Páginas Dinámicas con PHP + MySQL', desc: 'Desarrollo de aplicaciones web con conexión a base de datos, formularios y panel de administración.', tags: ['PHP','MySQL','HTML','Forms'] },
+      { title: 'Lógica de Servidor', desc: 'Manejo de sesiones, autenticación de usuarios y procesamiento de datos en el servidor.', tags: ['PHP','Sessions','Auth'] }
+    ]
+  },
+  ai: {
+    tag: 'IA Generativa',
+    title: 'Inteligencia Artificial Aplicada',
+    sub: 'Herramientas de IA que uso en proyectos reales y flujos de trabajo.',
+    logos: null,
+    items: [
+      { title: '🤖 Modelos que manejo', desc: 'LLMs con los que trabajo para generación de contenido, código y automatización.', tags: [],
+        logos: [
+          { name: 'ChatGPT',  img: 'https://img.icons8.com/color/96/chatgpt.png',           domain: 'chat.openai.com' },
+          { name: 'Claude',   img: 'https://img.icons8.com/color/96/claude-ai.png',          domain: 'claude.ai' },
+          { name: 'Gemini',   img: 'https://img.icons8.com/color/96/google-gemini.png',      domain: 'gemini.google.com' },
+          { name: 'DeepSeek', img: 'https://img.icons8.com/color/96/chat-bot.png',           domain: 'deepseek.com' }
+        ]
+      },
+      { title: 'Ingeniería de Prompts', desc: 'Diseño de prompts efectivos para generación de contenido, código y análisis de datos.', tags: ['Prompts','LLM','Contexto','Instrucciones'] },
+      { title: 'IA en Flujos de Trabajo', desc: 'Integración de IA para automatizar tareas de redacción, análisis y generación de código.', tags: ['Automatización','Productividad','Código','Contenido'] }
+    ]
+  },
+  html: {
+    tag: 'HTML5 / CSS',
+    title: 'Maquetación & Diseño Web',
+    sub: 'Estructura y estilos para sitios y aplicaciones web.',
+    items: [
+      { title: 'Este Portafolio Web', desc: 'Diseño y desarrollo completo de este CV web con HTML5, CSS y animaciones.', tags: ['HTML5','CSS','Responsive','Animaciones'] },
+      { title: 'Sitios Responsivos', desc: 'Maquetación de páginas adaptadas a móvil, tablet y escritorio con CSS Grid y Flexbox.', tags: ['CSS Grid','Flexbox','Mobile-first'] }
+    ]
+  },
+  git: {
+    tag: 'Git',
+    title: 'Control de Versiones',
+    sub: 'Uso de Git para gestionar proyectos y colaborar en equipo.',
+    link: 'https://github.com/iansalinas8',
+    items: [
+      { title: 'GitHub — iansalinas8', desc: 'Repositorios personales con proyectos de Python, JavaScript y web. Historial de commits y versiones.', tags: ['Git','GitHub','Commits','Branches'] }
+    ]
+  },
+  apache: {
+    tag: 'Apache',
+    title: 'Servidor Web Apache',
+    sub: 'Configuración y administración de servidores web Apache.',
+    items: [
+      { title: 'Hosting de Aplicaciones Web', desc: 'Configuración de Apache para servir aplicaciones PHP y sitios web, incluyendo virtual hosts y permisos.', tags: ['Apache','VirtualHosts','.htaccess'] },
+      { title: 'mod_rewrite y Redirecciones', desc: 'Configuración de reglas de reescritura de URLs y redirecciones personalizadas.', tags: ['mod_rewrite','Apache','URLs'] }
+    ]
+  },
+  cpp: {
+    tag: 'C++',
+    title: 'Programación C++',
+    sub: 'Lógica de bajo nivel, POO y algoritmos con C++.',
+    items: [
+      { title: 'Programación Orientada a Objetos', desc: 'Implementación de clases, herencia, polimorfismo y encapsulamiento en C++.', tags: ['C++','OOP','Clases'] },
+      { title: 'Algoritmos y Estructuras de Datos', desc: 'Implementación de algoritmos de ordenamiento, búsqueda y estructuras como listas y árboles.', tags: ['C++','Algoritmos','Estructuras'] }
+    ]
+  },
+  video: {
+    tag: 'Edición de Video',
+    title: 'Producción y Edición',
+    sub: 'Programas que uso para editar video para redes sociales y proyectos digitales.',
+    logos: null,
+    items: [
+      { title: '🎬 Software que manejo', desc: 'Herramientas de edición de video profesional y móvil.', tags: [],
+        logos: [
+          { name: 'CapCut',         img: 'https://img.icons8.com/color/96/capcut.png',              domain: 'capcut.com' },
+          { name: 'DaVinci',        img: 'https://img.icons8.com/color/96/davinci-resolve.png',    domain: 'blackmagicdesign.com' },
+          { name: 'Adobe Premiere', img: 'https://img.icons8.com/color/96/adobe-premiere-pro.png', domain: 'adobe.com' },
+          { name: 'Filmora',        img: 'https://img.icons8.com/color/96/filmora.png',            domain: 'filmora.wondershare.com' }
+        ]
+      },
+      { title: 'Edición para Redes Sociales', desc: 'Corte, montaje, efectos y exportación de videos para Instagram, TikTok y YouTube.', tags: ['Reels','TikTok','YouTube','Shorts'] },
+      { title: 'Contenido Digital', desc: 'Producción de videos con texto animado, transiciones y banda sonora.', tags: ['Efectos','Animación','Transiciones','Audio'] }
+    ]
+  },
+  '3d': {
+    tag: 'Modelado 3D',
+    title: 'Diseño 3D',
+    sub: 'Creación, modelado y render de objetos tridimensionales.',
+    logos: null,
+    items: [
+      { title: '🧊 Software que uso', desc: 'Herramientas para modelado y render 3D.', tags: [],
+        logos: [
+          { name: 'Blender', img: 'https://img.icons8.com/color/48/blender-3d.png' }
+        ]
+      },
+      { title: 'Modelado de Objetos', desc: 'Creación de modelos 3D para proyectos personales, visualización y render.', tags: ['Modelado','Render','Iluminación','Texturas'] }
+    ]
+  },
+  content: {
+    tag: 'Contenido & Video',
+    title: 'Creación de Contenido y Edición de Video',
+    sub: 'Producción, edición y publicación de contenido digital para redes y plataformas.',
+    logos: null,
+    items: [
+      { title: '🎬 Software de Edición', desc: 'Herramientas que uso para editar y producir video.', tags: [],
+        logos: [
+          { name: 'CapCut',         domain: 'capcut.com' },
+          { name: 'DaVinci',        domain: 'blackmagicdesign.com' },
+          { name: 'Adobe Premiere', domain: 'adobe.com' },
+          { name: 'Filmora',        domain: 'filmora.wondershare.com' }
+        ]
+      },
+      { title: '📱 Redes donde publico', desc: 'Plataformas donde creo y publico contenido.', tags: [],
+        logos: [
+          { name: '@el_.ian',  img: 'https://img.icons8.com/color/96/tiktok.png', link: 'https://www.tiktok.com/@el_.ian' },
+          { name: 'Instagram', img: 'https://img.icons8.com/color/96/instagram-new.png' },
+          { name: 'YouTube',   img: 'https://img.icons8.com/color/96/youtube-play.png' }
+        ]
+      },
+      { title: 'Contenido Técnico', desc: 'Producción de contenido orientado a tecnología y programación.', tags: ['Tech','Programación','Educativo'] }
+    ]
+  },
+  office: {
+    tag: 'Microsoft Office',
+    title: 'Paquetería Office',
+    sub: 'Herramientas de productividad Microsoft que manejo.',
+    logos: null,
+    items: [
+      { title: '💼 Apps que uso', desc: 'Suite completa de Microsoft Office para trabajo y productividad.', tags: [],
+        logos: [
+          { name: 'Word',       img: 'https://img.icons8.com/color/48/microsoft-word-2019.png' },
+          { name: 'Excel',      img: 'https://img.icons8.com/color/48/microsoft-excel-2019.png' },
+          { name: 'PowerPoint', img: 'https://img.icons8.com/color/48/microsoft-powerpoint-2019.png' },
+          { name: 'Outlook',    img: 'https://img.icons8.com/color/48/microsoft-outlook-2019.png' },
+          { name: 'Teams',      img: 'https://img.icons8.com/color/48/microsoft-teams.png' },
+          { name: 'OneDrive',   img: 'https://img.icons8.com/color/48/microsoft-onedrive-2019.png' }
+        ]
+      },
+      { title: 'Excel — Reportes y Datos', desc: 'Hojas de cálculo, tablas dinámicas, fórmulas y reportes de operación.', tags: ['Fórmulas','Tablas dinámicas','Gráficas'] },
+      { title: 'Word y PowerPoint', desc: 'Documentos formales, presentaciones y reportes profesionales.', tags: ['Documentos','Presentaciones','Formato'] },
+      { title: 'Outlook', desc: 'Gestión de correo corporativo, calendarios y seguimiento de comunicaciones.', tags: ['Email','Calendario','Corporativo'] }
+    ]
+  },
+  remoto: {
+    tag: 'Trabajo Remoto',
+    title: 'Herramientas Remotas',
+    sub: 'Apps y servicios que uso para trabajar 100% en línea.',
+    logos: null,
+    items: [
+      { title: '🖥️ Acceso y Soporte Remoto', desc: 'Control de equipos a distancia en tiempo real.', tags: [],
+        logos: [
+          { name: 'TeamViewer', img: 'https://img.icons8.com/color/96/teamviewer.png',        domain: 'teamviewer.com' },
+          { name: 'AnyDesk',    img: 'https://img.icons8.com/color/96/anydesk.png',          domain: 'anydesk.com' },
+          { name: 'RDP',        img: 'https://img.icons8.com/color/96/remote-desktop.png',   domain: 'microsoft.com' }
+        ]
+      },
+      { title: '🔒 Seguridad y Conectividad', desc: 'Redes privadas y conexiones seguras.', tags: [],
+        logos: [
+          { name: 'NordVPN', img: 'https://img.icons8.com/color/96/nord-vpn.png', domain: 'nordvpn.com' }
+        ]
+      },
+      { title: '💬 Comunicación', desc: 'Reuniones y coordinación con equipos y clientes.', tags: [],
+        logos: [
+          { name: 'Zoom',      img: 'https://img.icons8.com/color/96/zoom.png' },
+          { name: 'Meet',      img: 'https://img.icons8.com/color/96/google-meet.png' },
+          { name: 'Teams',     img: 'https://img.icons8.com/color/96/microsoft-teams.png' },
+          { name: 'Discord',   img: 'https://img.icons8.com/color/96/discord.png' },
+          { name: 'WhatsApp',  img: 'https://img.icons8.com/color/96/whatsapp.png' }
+        ]
+      },
+      { title: '📁 Archivos y Colaboración', desc: 'Gestión de documentos en la nube.', tags: [],
+        logos: [
+          { name: 'Drive',     img: 'https://img.icons8.com/color/96/google-drive.png' },
+          { name: 'OneDrive',  img: 'https://img.icons8.com/color/96/microsoft-onedrive-2019.png' },
+          { name: 'Dropbox',   img: 'https://img.icons8.com/color/96/dropbox.png' },
+          { name: 'Docs',      img: 'https://img.icons8.com/color/96/google-docs.png' }
+        ]
+      },
+      { title: '⚙️ Productividad y Gestión', desc: 'Organización de tareas y tiempos de trabajo.', tags: [],
+        logos: [
+          { name: 'Google Keep', img: 'https://img.icons8.com/color/96/google-keep.png',         domain: 'keep.google.com' },
+          { name: 'To Do',       img: 'https://img.icons8.com/color/96/microsoft-to-do.png',    domain: 'todo.microsoft.com' },
+          { name: 'Calendar',    img: 'https://img.icons8.com/color/96/google-calendar.png',    domain: 'calendar.google.com' },
+          { name: 'Tasks',       img: 'https://img.icons8.com/color/96/google-tasks.png',       domain: 'tasks.google.com' }
+        ]
+      }
+    ]
+  },
+  webdesign: {
+    tag: 'Diseño Web',
+    title: 'Diseño de Páginas Web',
+    sub: 'Diseño de interfaces, layouts y experiencia de usuario para sitios web.',
+    items: [
+      { title: 'Este Portafolio', desc: 'Diseño completo de este CV web — tipografía, paleta de colores, layout responsivo y modo oscuro.', tags: ['UI','UX','CSS','Responsivo'] },
+      { title: 'Sitios para Clientes', desc: 'Diseño y desarrollo de páginas web para clientes, con enfoque en usabilidad y estética.', tags: ['Diseño','HTML','CSS','Cliente'] }
+    ]
+  }
+};
+
+function openModal(key) {
+  const d = portfolio[key];
+  if (!d) return;
+  document.getElementById('m-tag').textContent   = d.tag;
+  document.getElementById('m-title').textContent = PT(key+'.title') || d.title;
+  document.getElementById('m-sub').textContent   = PT(key+'.sub')   || d.sub;
+
+  let html = '';
+
+  // Logo grid si existe
+  if (d.logos && d.logos.length) {
+    html += `<div class="logo-grid">${d.logos.map(l => `
+      <div class="logo-item">
+        <img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${l.domain}&size=128" alt="${l.name}" loading="lazy"/>
+        <span>${l.name}</span>
+      </div>`).join('')}</div>`;
+  }
+
+  // Items normales
+  html += d.items.map((it, idx) => {
+    const isLink  = idx === 0 && d.link;
+    const tag     = isLink ? `a` : `div`;
+    const attrs   = isLink ? `href="${d.link}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;cursor:pointer"` : ``;
+    const itTitle = PT(key+'.'+idx+'.title') || it.title;
+    const itDesc  = PT(key+'.'+idx+'.desc')  || it.desc;
+    return `<${tag} class="modal-item" ${attrs}>
+      <div class="mi-title">${itTitle} ${isLink ? '<span style="font-size:10px;opacity:.5">↗</span>' : ''}</div>
+      <div class="mi-desc">${itDesc}</div>
+      ${it.logos && it.logos.length ? `<div class="logo-grid">${it.logos.map(l => {
+        const src = l.img ? l.img : `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${l.domain}&size=128`;
+        const fb  = l.domain ? `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${l.domain}&size=128` : '';
+        const inner = `<img src="${src}" alt="${l.name}" loading="lazy" ${fb ? `onerror="this.onerror=null;this.src='${fb}'"` : ''}/><span>${l.name}</span>`;
+        return l.link
+          ? `<a class="logo-item" href="${l.link}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">${inner}</a>`
+          : `<div class="logo-item">${inner}</div>`;
+      }).join('')}</div>` : ''}
+      ${it.tags && it.tags.length ? `<div class="mi-tags">${it.tags.map(t=>`<span class="mi-tag">${t}</span>`).join('')}</div>` : ''}
+    </${tag}>`;
+  }).join('');
+
+  document.getElementById('m-items').innerHTML = html;
+  document.getElementById('portfolio-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('portfolio-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ══ FIX TÁCTIL — registra clic en cards ══ */
+document.querySelectorAll('.stack-card').forEach(card => {
+  const match = card.getAttribute('onclick')?.match(/openModal\('(.+?)'\)/);
+  if (!match) return;
+  const key = match[1];
+  card.removeAttribute('onclick');
+  card.setAttribute('data-modal', key);
+
+  let touchStartX = 0, touchStartY = 0;
+
+  card.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  card.addEventListener('touchend', e => {
+    const dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+    if (dx < 10 && dy < 10) {
+      e.preventDefault();
+      openModal(key);
+    }
+  }, { passive: false });
+
+  card.addEventListener('click', () => openModal(key));
+});
+
+/* ══ FORZAR SCROLL AL INICIO ══ */
+window.addEventListener('beforeunload', () => window.scrollTo(0, 0));
+if (history.scrollRestoration) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
+/* ══ MODO OSCURO AUTOMÁTICO ══ */
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+function applyTheme(dark) {
+  document.body.classList.toggle('dark', dark);
+  document.getElementById('icon-moon').style.display = dark ? 'none'  : 'block';
+  document.getElementById('icon-sun').style.display  = dark ? 'block' : 'none';
+}
+
+applyTheme(prefersDark.matches);
+prefersDark.addEventListener('change', e => applyTheme(e.matches));
+
+/* ══ ORBIT — generar nodos ══ */
+const orbitData = [
+  { r: 110, items: [
+    { key: 'python',  name: 'Python' },
+    { key: 'js',      name: 'JavaScript' },
+    { key: 'sql',     name: 'SQL / MySQL' },
+    { key: 'ai',      name: 'IA Generativa' },
+    { key: 'redes',   name: 'Redes / IT' }
+  ]},
+  { r: 200, items: [
+    { key: 'node',    name: 'Node.js' },
+    { key: 'php',     name: 'PHP' },
+    { key: 'html',    name: 'HTML5 / CSS' },
+    { key: 'git',     name: 'Git' },
+    { key: 'apache',  name: 'Apache' },
+    { key: 'cpp',     name: 'C++' }
+  ]},
+  { r: 280, items: [
+    { key: 'content',   name: 'Contenido & Video' },
+    { key: '3d',        name: 'Modelado 3D' },
+    { key: 'office',    name: 'MS Office' },
+    { key: 'webdesign', name: 'Diseño Web' },
+    { key: 'remoto',    name: 'Trabajo Remoto' }
+  ]}
+];
+
+const scene = document.getElementById('orbit-scene');
+const cx = 310, cy = 310;
+const speeds = [0.004, 0.0025, 0.0015];
+const orbitNodeMap = {}; // key → node element
+
+// Construir estado de cada órbita
+const orbitState = orbitData.map((orbit, oi) => {
+  const nodes = orbit.items.map((item, i) => {
+    const baseAngle = (i / orbit.items.length) * 2 * Math.PI - Math.PI / 2;
+
+    const node = document.createElement('button');
+    node.className = 'orbit-node';
+    node.textContent = item.name;
+    node.setAttribute('data-key', item.key);
+    orbitNodeMap[item.key] = node;
+
+    let tStartX = 0, tStartY = 0;
+    node.addEventListener('touchstart', e => {
+      tStartX = e.touches[0].clientX;
+      tStartY = e.touches[0].clientY;
+    }, { passive: true });
+    node.addEventListener('touchend', e => {
+      const dx = Math.abs(e.changedTouches[0].clientX - tStartX);
+      const dy = Math.abs(e.changedTouches[0].clientY - tStartY);
+      if (dx < 10 && dy < 10) { e.preventDefault(); openModal(item.key); }
+    }, { passive: false });
+    node.addEventListener('click', () => openModal(item.key));
+
+    node.addEventListener('mouseenter', () => orbitPaused = true);
+    node.addEventListener('mouseleave', () => orbitPaused = false);
+    scene.appendChild(node);
+    return { node, baseAngle };
+  });
+
+  return { r: orbit.r, nodes, offset: 0, speed: speeds[oi] };
+});
+
+// Animación orbital
+function animateOrbits() {
+  orbitState.forEach(orbit => {
+    if (!orbitPaused) orbit.offset += orbit.speed;
+    orbit.nodes.forEach(({ node, baseAngle }) => {
+      const angle = baseAngle + orbit.offset;
+      const x = cx + orbit.r * Math.cos(angle);
+      const y = cy + orbit.r * Math.sin(angle);
+      node.style.left = x + 'px';
+      node.style.top  = y + 'px';
+    });
+  });
+  requestAnimationFrame(animateOrbits);
+}
+
+let orbitPaused = false;
+
+animateOrbits();
+
+/* ══ REVEAL AL HACER SCROLL ══ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function toggleDark() {
+  applyTheme(!document.body.classList.contains('dark'));
+}
+
+let currentLang = 'es';
+
+/* ══ TRADUCCIONES DEL PORTAFOLIO ══ */
+const portT = {
+  en: {
+    'redes.title':'Infrastructure & Support','redes.sub':'Real experience running a network services operation and providing IT support.',
+    'redes.0.title':'Internet Service Provider — ISP','redes.0.desc':'Full network administration: router configuration, IP assignment, bandwidth control and active client monitoring.',
+    'redes.1.title':'Equipment I work with','redes.1.desc':'Configuration and administration of real networking equipment.',
+    'redes.2.title':'Computer & IT Support','redes.2.desc':'Diagnosis, repair and maintenance of computers, laptops and printers.',
+    'redes.3.title':'Client Technical Support','redes.3.desc':'Diagnosis and resolution of connectivity issues, on-site and remote device configuration.',
+    'redes.4.title':'Remote Work Tools','redes.4.desc':'Essential tools to operate, communicate and provide support 100% remotely.',
+    'python.title':'Automation & Scripts','python.sub':'Python projects for automation, data processing and API consumption.',
+    'python.0.title':'Process Automation','python.0.desc':'Scripts to automate repetitive tasks: file reading, report generation and notifications.',
+    'python.1.title':'REST API Consumption','python.1.desc':'Integration with external APIs to automatically obtain and process data.',
+    'python.2.title':'Data Processing','python.2.desc':'Cleaning, transformation and analysis of structured data to generate reports.',
+    'js.title':'Frontend Development','js.sub':'Dynamic interfaces, client logic and DOM manipulation with JavaScript.',
+    'js.0.title':'Dynamic Interfaces','js.0.desc':'Development of interactive web pages with event handling, animations and dynamic content updates.',
+    'js.1.title':'Frontend API Consumption','js.1.desc':'REST API integration using fetch and async handling with async/await.',
+    'js.2.title':'This Web CV','js.2.desc':'This portfolio itself is built with pure HTML, CSS and JavaScript — no frameworks.',
+    'node.title':'Backend & REST APIs','node.sub':'Backend services and APIs built with Node.js.',
+    'node.0.title':'REST APIs with Node.js','node.0.desc':'Building REST endpoints for web applications, route handling and middleware.',
+    'node.1.title':'Backend Server','node.1.desc':'Server logic for web applications: authentication, request handling and JSON responses.',
+    'sql.title':'Databases','sql.sub':'Design, administration and querying of relational databases.',
+    'sql.0.title':'Client Database — ISP','sql.0.desc':'Design and implementation of a DB to manage clients, contracts, payments and service history.',
+    'sql.1.title':'Relational Schemas','sql.1.desc':'Table design, relationships, foreign keys and stored procedures for various projects.',
+    'php.title':'Dynamic Web Development','php.sub':'Web pages and applications with server-side logic in PHP.',
+    'php.0.title':'Dynamic Pages with PHP + MySQL','php.0.desc':'Web application development with database connection, forms and admin panel.',
+    'php.1.title':'Server Logic','php.1.desc':'Session handling, user authentication and data processing on the server.',
+    'ai.title':'Applied Artificial Intelligence','ai.sub':'AI tools I use in real projects and workflows.',
+    'ai.0.title':'Models I work with','ai.0.desc':'LLMs I use for content generation, coding and automation.',
+    'ai.1.title':'Prompt Engineering','ai.1.desc':'Designing effective prompts for content generation, code and data analysis.',
+    'ai.2.title':'AI in Workflows','ai.2.desc':'Integrating AI tools to automate writing, analysis and code generation tasks.',
+    'html.title':'Markup & Web Design','html.sub':'Structure and styles for websites and web applications.',
+    'html.0.title':'This Web Portfolio','html.0.desc':'Complete design and development of this web CV with HTML5, CSS and animations.',
+    'html.1.title':'Responsive Sites','html.1.desc':'Layouts adapted for mobile, tablet and desktop with CSS Grid and Flexbox.',
+    'git.title':'Version Control','git.sub':'Using Git to manage projects and collaborate.',
+    'git.0.title':'GitHub — iansalinas8','git.0.desc':'Personal repositories with Python, JavaScript and web projects.',
+    'apache.title':'Apache Web Server','apache.sub':'Configuration and administration of Apache web servers.',
+    'apache.0.title':'Web Application Hosting','apache.0.desc':'Apache configuration to serve PHP apps and websites, including virtual hosts and permissions.',
+    'apache.1.title':'mod_rewrite & Redirects','apache.1.desc':'URL rewriting rules and custom redirects configuration.',
+    'cpp.title':'C++ Programming','cpp.sub':'Low-level logic, OOP and algorithms with C++.',
+    'cpp.0.title':'Object-Oriented Programming','cpp.0.desc':'Implementation of classes, inheritance, polymorphism and encapsulation in C++.',
+    'cpp.1.title':'Algorithms & Data Structures','cpp.1.desc':'Implementation of sorting, search algorithms and structures like lists and trees.',
+    'video.title':'Production & Editing','video.sub':'Software I use to edit and produce video.',
+    'video.0.title':'Editing Software','video.0.desc':'Tools I use for video editing and production.',
+    'video.1.title':'Editing for Social Media','video.1.desc':'Cutting, editing, effects and export of optimized videos for Instagram, TikTok and YouTube.',
+    'video.2.title':'Digital Content','video.2.desc':'Video production with animated text, transitions and soundtrack for personal projects.',
+    '3d.title':'3D Design','3d.sub':'Creation, modeling and rendering of 3D objects.',
+    '3d.0.title':'Software I use','3d.0.desc':'Tools for 3D modeling and rendering.',
+    '3d.1.title':'Object Modeling','3d.1.desc':'Creation of 3D models for personal projects, visualization and rendering.',
+    'content.title':'Content Creation & Video Editing','content.sub':'Production, editing and publishing of digital content for social media.',
+    'content.0.title':'Editing Software','content.0.desc':'Tools I use to edit and produce video.',
+    'content.1.title':'Platforms I publish on','content.1.desc':'Platforms where I create and publish content.',
+    'content.2.title':'Technical Content','content.2.desc':'Production of content focused on technology and programming.',
+    'office.title':'Office Suite','office.sub':'Microsoft productivity tools I use.',
+    'office.0.title':'Apps I use','office.0.desc':'Full Microsoft Office suite for work and productivity.',
+    'office.1.title':'Excel — Reports & Data','office.1.desc':'Spreadsheets, pivot tables, formulas and operation reports.',
+    'office.2.title':'Word & PowerPoint','office.2.desc':'Formal documents, presentations and professional reports.',
+    'office.3.title':'Outlook','office.3.desc':'Corporate email management, calendars and communication tracking.',
+    'webdesign.title':'Web Page Design','webdesign.sub':'Interface design, layouts and user experience for websites.',
+    'webdesign.0.title':'This Portfolio','webdesign.0.desc':'Complete design of this web CV — typography, color palette, responsive layout and dark mode.',
+    'webdesign.1.title':'Client Websites','webdesign.1.desc':'Design and development of websites for clients, focused on usability and aesthetics.',
+    'remoto.title':'Remote Tools','remoto.sub':'Apps and services I use to work 100% online.',
+    'remoto.0.title':'🖥️ Remote Access & Support','remoto.0.desc':'Remote connection and control of equipment in real time.',
+    'remoto.1.title':'🔒 Security & Connectivity','remoto.1.desc':'Private networks and secure remote connections.',
+    'remoto.2.title':'💬 Communication','remoto.2.desc':'Meetings and coordination with clients and teams.',
+    'remoto.3.title':'📁 Files & Collaboration','remoto.3.desc':'Cloud document management and collaboration.',
+    'remoto.4.title':'⚙️ Productivity & Management','remoto.4.desc':'Task and remote workflow organization.'
+  },
+  it: {
+    'redes.title':'Infrastruttura & Supporto','redes.sub':'Esperienza reale nella gestione di una rete di servizi internet e nel supporto IT.',
+    'redes.0.title':'Fornitore di Servizi Internet','redes.0.desc':'Amministrazione completa della rete: configurazione router, assegnazione IP, controllo banda e monitoraggio clienti.',
+    'redes.1.title':'Apparati che gestisco','redes.1.desc':'Configurazione e amministrazione di apparati di rete reali.',
+    'redes.2.title':'Supporto PC & IT','redes.2.desc':'Diagnosi, riparazione e manutenzione di computer, laptop e stampanti.',
+    'redes.3.title':'Supporto Tecnico Clienti','redes.3.desc':'Diagnosi e risoluzione di problemi di connettività, configurazione in loco e da remoto.',
+    'redes.4.title':'Strumenti per Lavoro Remoto','redes.4.desc':'Strumenti essenziali per operare, comunicare e fornire supporto al 100% da remoto.',
+    'python.title':'Automazione & Script','python.sub':'Progetti Python per automazione, elaborazione dati e consumo di API.',
+    'python.0.title':'Automazione dei Processi','python.0.desc':'Script per automatizzare attività ripetitive: lettura file, generazione report e notifiche.',
+    'python.1.title':'Consumo API REST','python.1.desc':'Integrazione con API esterne per ottenere ed elaborare dati automaticamente.',
+    'python.2.title':'Elaborazione Dati','python.2.desc':'Pulizia, trasformazione e analisi di dati strutturati per generare report.',
+    'js.title':'Sviluppo Frontend','js.sub':'Interfacce dinamiche, logica client e manipolazione del DOM con JavaScript.',
+    'js.0.title':'Interfacce Dinamiche','js.0.desc':'Sviluppo di pagine web interattive con gestione eventi, animazioni e aggiornamento dinamico.',
+    'js.1.title':'Consumo API dal Frontend','js.1.desc':'Integrazione di API REST con fetch e gestione asincrona con async/await.',
+    'js.2.title':'Questo CV Web','js.2.desc':'Questo stesso portfolio è costruito con HTML, CSS e JavaScript puro — senza framework.',
+    'node.title':'Backend & API REST','node.sub':'Servizi backend e API con Node.js.',
+    'node.0.title':'API REST con Node.js','node.0.desc':'Costruzione di endpoint REST, gestione route e middleware.',
+    'node.1.title':'Server Backend','node.1.desc':'Logica server per applicazioni web: autenticazione, gestione richieste e risposte JSON.',
+    'sql.title':'Database','sql.sub':'Progettazione, amministrazione e query di database relazionali.',
+    'sql.0.title':'Database Clienti — ISP','sql.0.desc':'Progettazione e implementazione di un DB per gestire clienti, contratti e pagamenti.',
+    'sql.1.title':'Schemi Relazionali','sql.1.desc':'Design tabelle, relazioni, chiavi esterne e stored procedure.',
+    'php.title':'Sviluppo Web Dinamico','php.sub':'Pagine e applicazioni web con logica server in PHP.',
+    'php.0.title':'Pagine Dinamiche PHP + MySQL','php.0.desc':'Sviluppo web con connessione database, form e pannello di amministrazione.',
+    'php.1.title':'Logica Server','php.1.desc':'Gestione sessioni, autenticazione utenti ed elaborazione dati lato server.',
+    'ai.title':'Intelligenza Artificiale Applicata','ai.sub':'Strumenti di IA che uso in progetti reali.',
+    'ai.0.title':'Modelli che utilizzo','ai.0.desc':'LLM che utilizzo per generazione contenuti, codice e automazione.',
+    'ai.1.title':'Ingegneria dei Prompt','ai.1.desc':'Progettazione di prompt efficaci per generazione contenuti, codice e analisi dati.',
+    'ai.2.title':'IA nei Flussi di Lavoro','ai.2.desc':'Integrazione di strumenti IA per automatizzare scrittura, analisi e generazione codice.',
+    'html.title':'Markup & Design Web','html.sub':'Struttura e stili per siti web e applicazioni.',
+    'html.0.title':'Questo Portfolio Web','html.0.desc':'Design e sviluppo completo di questo CV web con HTML5, CSS e animazioni.',
+    'html.1.title':'Siti Responsivi','html.1.desc':'Layout adattati per mobile, tablet e desktop con CSS Grid e Flexbox.',
+    'git.title':'Controllo Versione','git.sub':'Utilizzo di Git per gestire progetti e collaborare.',
+    'git.0.title':'GitHub — iansalinas8','git.0.desc':'Repository personali con progetti Python, JavaScript e web.',
+    'apache.title':'Server Web Apache','apache.sub':'Configurazione e amministrazione di server web Apache.',
+    'apache.0.title':'Hosting Applicazioni Web','apache.0.desc':'Configurazione Apache per servire app PHP e siti, inclusi virtual host e permessi.',
+    'apache.1.title':'mod_rewrite & Redirect','apache.1.desc':'Configurazione regole di riscrittura URL e redirect personalizzati.',
+    'cpp.title':'Programmazione C++','cpp.sub':'Logica di basso livello, OOP e algoritmi con C++.',
+    'cpp.0.title':'Programmazione Orientata agli Oggetti','cpp.0.desc':'Implementazione di classi, ereditarietà, polimorfismo ed incapsulamento.',
+    'cpp.1.title':'Algoritmi & Strutture Dati','cpp.1.desc':'Implementazione di algoritmi di ordinamento, ricerca e strutture come liste e alberi.',
+    'video.title':'Produzione & Montaggio','video.sub':'Software che uso per montare e produrre video.',
+    'video.0.title':'Software di Montaggio','video.0.desc':'Strumenti per montaggio e produzione video.',
+    'video.1.title':'Montaggio per Social','video.1.desc':'Taglio, montaggio, effetti ed esportazione per Instagram, TikTok e YouTube.',
+    'video.2.title':'Contenuto Digitale','video.2.desc':'Produzione video con testo animato, transizioni e colonna sonora.',
+    '3d.title':'Design 3D','3d.sub':'Creazione, modellazione e render di oggetti tridimensionali.',
+    '3d.0.title':'Software che uso','3d.0.desc':'Strumenti per modellazione e render 3D.',
+    '3d.1.title':'Modellazione Oggetti','3d.1.desc':'Creazione di modelli 3D per progetti personali, visualizzazione e render.',
+    'content.title':'Creazione Contenuti & Montaggio Video','content.sub':'Produzione, montaggio e pubblicazione di contenuti digitali.',
+    'content.0.title':'Software di Montaggio','content.0.desc':'Strumenti per montare e produrre video.',
+    'content.1.title':'Piattaforme dove pubblico','content.1.desc':'Piattaforme dove creo e pubblico contenuti.',
+    'content.2.title':'Contenuto Tecnico','content.2.desc':'Produzione di contenuti orientati a tecnologia e programmazione.',
+    'office.title':'Suite Office','office.sub':'Strumenti Microsoft di produttività che utilizzo.',
+    'office.0.title':'App che uso','office.0.desc':'Suite completa Microsoft Office per lavoro e produttività.',
+    'office.1.title':'Excel — Report & Dati','office.1.desc':'Fogli di calcolo, tabelle pivot, formule e report operativi.',
+    'office.2.title':'Word & PowerPoint','office.2.desc':'Documenti formali, presentazioni e report professionali.',
+    'office.3.title':'Outlook','office.3.desc':'Gestione email aziendale, calendari e comunicazioni.',
+    'webdesign.title':'Design di Siti Web','webdesign.sub':'Design interfacce, layout e UX per siti web.',
+    'webdesign.0.title':'Questo Portfolio','webdesign.0.desc':'Design completo di questo CV web — tipografia, palette colori, layout responsivo e dark mode.',
+    'webdesign.1.title':'Siti per Clienti','webdesign.1.desc':'Design e sviluppo di siti web per clienti, con focus su usabilità ed estetica.',
+    'remoto.title':'Strumenti Remoti','remoto.sub':'App e servizi che uso per lavorare al 100% online.',
+    'remoto.0.title':'🖥️ Accesso & Supporto Remoto','remoto.0.desc':'Connessione e controllo di dispositivi a distanza in tempo reale.',
+    'remoto.1.title':'🔒 Sicurezza & Connettività','remoto.1.desc':'Reti private e connessioni sicure da remoto.',
+    'remoto.2.title':'💬 Comunicazione','remoto.2.desc':'Riunioni e coordinamento con clienti e team.',
+    'remoto.3.title':'📁 File & Collaborazione','remoto.3.desc':'Gestione documenti cloud e collaborazione.',
+    'remoto.4.title':'⚙️ Produttività & Gestione','remoto.4.desc':'Organizzazione attività e flussi di lavoro remoti.'
+  }
+};
+
+function PT(key) {
+  if (currentLang === 'es') return null;
+  return portT[currentLang] && portT[currentLang][key];
+}
+
+function setLang(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[lang][key]) el.innerHTML = i18n[lang][key];
+  });
+  // Actualizar nodos orbitales
+  document.querySelectorAll('.orbit-node').forEach(node => {
+    const key = node.getAttribute('data-key');
+    const t = i18n[lang] && i18n[lang]['node.' + key];
+    if (t) node.textContent = t;
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  document.documentElement.lang = lang;
+  currentLang = lang;
+  if (typeof typeTag === 'function' && typeof tagTexts !== 'undefined') {
+    typeTag(tagTexts[lang] || tagTexts.es);
+  }
+}
+// Inicializar idioma en nodos orbitales al cargar
+document.addEventListener('DOMContentLoaded', () => {
+  setLang('es');
+});
+
+/* ══ NAVEGACIÓN — scroll forzado a secciones ══ */
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (!target) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  });
+});
+
+/* ══ BARRA DE PROGRESO DE SCROLL ══ */
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('scroll-progress').style.width = pct + '%';
+}, { passive: true });
+
+/* ══ PARTÍCULAS DE FONDO ══ */
+const pCanvas = document.getElementById('particles');
+const pCtx = pCanvas.getContext('2d');
+let particles = [];
+
+function resizeParticles() {
+  pCanvas.width  = window.innerWidth;
+  pCanvas.height = window.innerHeight;
+}
+resizeParticles();
+window.addEventListener('resize', resizeParticles);
+
+for (let i = 0; i < 50; i++) {
+  particles.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 1.8 + 0.5,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3
+  });
+}
+
+function drawParticles() {
+  pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+  const isDark = document.body.classList.contains('dark');
+  pCtx.fillStyle   = isDark ? 'rgba(100,180,255,.45)' : 'rgba(60,150,255,.3)';
+  pCtx.strokeStyle = isDark ? 'rgba(100,180,255,.12)' : 'rgba(60,150,255,.08)';
+
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > pCanvas.width)  p.vx *= -1;
+    if (p.y < 0 || p.y > pCanvas.height) p.vy *= -1;
+    pCtx.beginPath();
+    pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    pCtx.fill();
+  });
+
+  // líneas entre partículas cercanas
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 120) {
+        pCtx.beginPath();
+        pCtx.moveTo(particles[i].x, particles[i].y);
+        pCtx.lineTo(particles[j].x, particles[j].y);
+        pCtx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* ══ CONTADORES ANIMADOS ══ */
+function countUp(el, target, dur) {
+  const start = performance.now();
+  function tick(now) {
+    const p = Math.min((now - start) / dur, 1);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+setTimeout(() => {
+  countUp(document.getElementById('stat-years'), 4,  1200);
+  countUp(document.getElementById('stat-tech'),  16, 1500);
+  countUp(document.getElementById('stat-langs'), 3,  1000);
+}, 900);
+
+/* ══ TYPING EFFECT EN HERO TAG ══ */
+const heroTag = document.querySelector('.hero-tag');
+const tagTexts = {
+  es: 'Desarrollador · Técnico IT · Morelos, México',
+  en: 'Developer · IT Technician · Morelos, Mexico',
+  it: 'Sviluppatore · Tecnico IT · Morelos, Messico'
+};
+
+let typeTimer = null;
+function typeTag(text) {
+  clearTimeout(typeTimer);
+  heroTag.innerHTML = '<span class="type-cursor"></span>';
+  let i = 0;
+  function step() {
+    if (i <= text.length) {
+      heroTag.innerHTML = text.slice(0, i) + '<span class="type-cursor"></span>';
+      i++;
+      typeTimer = setTimeout(step, 40);
+    } else {
+      setTimeout(() => { heroTag.textContent = text; }, 2000);
+    }
+  }
+  step();
+}
+setTimeout(() => typeTag(tagTexts[currentLang] || tagTexts.es), 400);
+
+/* ══ TILT 3D EN TARJETAS ══ */
+function addTilt(el) {
+  el.addEventListener('mousemove', e => {
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - 0.5;
+    const y = (e.clientY - r.top)  / r.height - 0.5;
+    el.style.transform = `perspective(600px) rotateY(${x*8}deg) rotateX(${-y*8}deg) translateY(-3px)`;
+  });
+  el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+}
+document.querySelectorAll('.edu-card').forEach(addTilt);
+</script>
+</body>
+</html>
